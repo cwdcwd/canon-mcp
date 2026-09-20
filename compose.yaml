@@ -13,6 +13,8 @@ services:
     environment:
       SCANNER_HOST: "192.168.0.199"
       SCAN_DEVICE: "pixma:MX490_192.168.0.199"
+      PRINTER_HOST: "192.168.0.199"
+      PRINTER_QUEUE: "MX490"
       SCAN_OUTPUT_DIR: "/scans"
       PORT: "3000"
       MCP_TOKEN: "${MCP_TOKEN:?set MCP_TOKEN in .env}"
