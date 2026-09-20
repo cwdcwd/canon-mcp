@@ -1,0 +1,20 @@
+services:
+  canon-mcp:
+    build: .
+    image: canon-mcp:latest
+    container_name: canon-mcp
+    restart: unless-stopped
+    # Bridge networking with SCANNER_HOST set: this is the tested path. The
+    # container reaches the printer by address, so no broadcast discovery.
+    ports:
+      - "3000:3000"
+    # For discovery instead (finds the printer without knowing its address),
+    # swap the two lines above for `network_mode: host`. Linux only.
+    environment:
+      SCANNER_HOST: "192.168.0.199"
+      SCAN_DEVICE: "pixma:MX490_192.168.0.199"
+      SCAN_OUTPUT_DIR: "/scans"
+      PORT: "3000"
+      MCP_TOKEN: "${MCP_TOKEN:?set MCP_TOKEN in .env}"
+    volumes:
+      - ./scans:/scans

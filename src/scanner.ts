@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { mkdir, readdir, stat } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
@@ -30,8 +31,17 @@ export type Device = { name: string, vendor: string, model: string, type: string
 
 const EXT: Record<Format, string> = { png: 'png', jpeg: 'jpg', tiff: 'tif', pdf: 'pdf' }
 
+const firstExisting = (paths: string[], fallback: string) => {
+  for (const p of paths) if (existsSync(p)) return p
+  return fallback
+}
+
 export const config = {
-  bin: process.env.SCANIMAGE_BIN ?? '/opt/homebrew/bin/scanimage',
+  // Linux (container, Pi) first, then Homebrew on macOS
+  bin: process.env.SCANIMAGE_BIN ?? firstExisting(
+    ['/usr/bin/scanimage', '/usr/local/bin/scanimage', '/opt/homebrew/bin/scanimage'],
+    'scanimage',
+  ),
   device: process.env.SCAN_DEVICE,
   outputDir: process.env.SCAN_OUTPUT_DIR ?? join(homedir(), 'Desktop', 'Scans'),
 }

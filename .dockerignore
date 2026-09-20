@@ -1,0 +1,5 @@
+node_modules
+scans
+.git
+.env
+*.log
